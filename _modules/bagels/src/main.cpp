@@ -42,6 +42,26 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
 #include "sensitiveInformation.h" //ENSURE WIFI & MQTT IS CONFIGURED CORRECTLY
+// Global variables for topic and timing
+String topicBuffer;
+unsigned long lastUpdate = 0;
+const unsigned long updateInterval = 5000; // Time between random number updates (5 seconds)
+    // 2. Data: Generate a random "sensor" value between 0 and 100,000
+    long randomNumber = random(0, 100001);
+void loop()
+{ 
+  // 1. Handle Connection Persistence (Keep this part!)
+  if (!client.connected())
+  {
+    // ... reconnection logic ...
+  }
+
+  // 2. Handle periodic data transmission
+  // We call our function here so it checks the timer every single loop
+  sendPeriodicUpdate(); 
+
+  client.loop(); // Check for incoming messages and keep the connection alive
+}
 
 // ANY MISSING LIBRARIES SHOULD BE ADDED TO THIS PLATFORMIO PROJECT USING: PLATFORMIO HOME > LIBRARIES
 
@@ -127,14 +147,40 @@ void callback(char *topic, byte *payload, unsigned int length)
   performActionBasedOnPayload(payload);
 }
 
+void sendPeriodicUpdate()
+{
+  // 1. Timer: Check if 5 seconds (updateInterval) have passed since the last update
+  unsigned long now = millis();
+  if (now - lastUpdate > updateInterval)
+  {
+    lastUpdate = now; // Reset the timer
+    
+    // --- Next steps will go here ---
+  }
+}
 
+void sendDataToServer(String topic, String message)
+{
+  // 1. Connection Check: Only proceed if the MQTT client is connected
+  if (client.connected())
+  {
+    // --- Logic for sending goes here ---
+  }
+  else
+  {
+    Serial.println("Send failed: MQTT not connected.");
+  }
+    // 2. Debug: Print the topic and message to the Serial Monitor
+    Serial.print("Sending message to topic [");
+    Serial.print(topic);
+    Serial.print("]: ");
+    Serial.println(message);
+}    
 
 // Declare the callback function prototype before setup()
 void callback(char *topic, byte *payload, unsigned int length);
 
-// MQTT client setup
-WiFiClient espClient;
-PubSubClient client(espClient);
+
 
 void setup()
 {
@@ -210,3 +256,5 @@ void loop()
   }
   client.loop(); // Check for incoming messages and keep the connection alive
 }
+
+
