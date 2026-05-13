@@ -13,7 +13,7 @@ include "../../includes/template.php";
 // Use 'host.docker.internal' to reach the host machine from inside a Docker container.
 // Ensure Ollama is configured to listen on 0.0.0.0 (OLLAMA_HOST=0.0.0.0)
 $ollamaUrl = "http://host.docker.internal:11434/api/chat"; 
-$modelName = "llama3.2"; 
+$modelName = "gemma4"; 
 
 // Initialize session state
 if (!isset($_SESSION['bofh_chat_history'])) {
