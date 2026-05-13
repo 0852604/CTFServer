@@ -7,6 +7,7 @@ services:
     image: php:8.5-apache
     ports:
       - "${PORT}:80"
+    restart: unless-stopped # auto container start if it stops functioning 
     volumes:
       # 1. Mount the entire root of the project to /workspace.
       # When VS Code attaches, it will see the root folder structure.
@@ -15,3 +16,10 @@ services:
       # 2. Re-mount the specific website folder for Apache.
       # This ensures Apache serves the correct files even though we are in a wider workspace.
       - ./var/www/html/_container_manager_app/containers/blanddudeshack
+
+
+sshtest-server:
+  build: .
+  ports:
+    - "${PORT}:22" # OUTSIDE:INSIDE
+  restart: unless-stopped
